@@ -1,4 +1,4 @@
-const CACHE_NAME = "suzhou-shooting-map-v5";
+const CACHE_NAME = "suzhou-shooting-map-v6";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {

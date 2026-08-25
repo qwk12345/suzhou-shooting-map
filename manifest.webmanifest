@@ -4,6 +4,8 @@
   "description": "从菁汇公寓出发的苏州园林与名胜四季拍摄计划、费用和长期记录工具。",
   "start_url": "./",
   "display": "standalone",
+  "scope": "./",
+  "orientation": "portrait",
   "background_color": "#f4f1eb",
   "theme_color": "#246b5b",
   "lang": "zh-CN",
