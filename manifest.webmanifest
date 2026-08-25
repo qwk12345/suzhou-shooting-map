@@ -1,0 +1,13 @@
+{
+  "name": "苏州四季拍摄地图",
+  "short_name": "苏州拍摄",
+  "description": "从菁汇公寓出发的苏州园林与名胜四季拍摄计划、费用和长期记录工具。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f1eb",
+  "theme_color": "#246b5b",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

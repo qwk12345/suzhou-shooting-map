@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta name="description" content="从菁汇公寓出发的苏州园林与名胜四季拍摄计划、费用和长期记录工具。" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>苏州四季拍摄地图</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">苏</span>
+          <div>
+            <p class="eyebrow">SUZHOU FIELD NOTE</p>
+            <h1>四季拍摄地图</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" id="install-button" type="button" title="安装到手机" aria-label="安装到手机" hidden>⇩</button>
+          <button class="icon-button" id="share-button" type="button" title="分享应用" aria-label="分享应用">↗</button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="view active" data-view="home" aria-labelledby="home-title">
+          <div class="welcome-row">
+            <div>
+              <p class="eyebrow">2026 SHOOTING YEAR</p>
+              <h2 id="home-title">从菁汇公寓出发，慢慢拍完苏州。</h2>
+              <p class="muted">照片和视频一起留档，先看光线，再决定路线。</p>
+            </div>
+            <div class="home-pin" aria-label="共同起点：菁汇公寓">H</div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="hero-panel-top">
+              <div>
+                <span class="section-kicker">年度进度</span>
+                <strong id="progress-label">0 / 12 个月</strong>
+              </div>
+              <span class="hero-season" id="current-season">夏</span>
+            </div>
+            <div class="progress-track"><span id="progress-bar"></span></div>
+            <div class="hero-panel-bottom">
+              <span>已完成的月份会自动保存在本机</span>
+              <button class="text-button" data-go="annual" type="button">打开年度表 →</button>
+            </div>
+          </div>
+
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">今天开始</span>
+              <h3>把下一次拍摄变得很具体</h3>
+            </div>
+            <span class="date-stamp" id="today-label"></span>
+          </div>
+          <div class="quick-grid">
+            <button class="quick-card quick-card-green" data-go="routes" type="button">
+              <span class="quick-icon">⌁</span>
+              <span><strong>选一条路线</strong><small>看顺序、预算和时段</small></span>
+              <span class="arrow">→</span>
+            </button>
+            <button class="quick-card quick-card-amber" data-go="log" type="button">
+              <span class="quick-icon">✎</span>
+              <span><strong>记一条素材</strong><small>照片、视频和天气</small></span>
+              <span class="arrow">→</span>
+            </button>
+          </div>
+
+          <div class="section-heading compact-heading">
+            <div>
+              <span class="section-kicker">本季推荐</span>
+              <h3 id="season-title">夏季拍什么</h3>
+            </div>
+            <button class="text-button" data-go="routes" type="button">全部路线 →</button>
+          </div>
+          <article class="feature-route" id="featured-route"></article>
+
+          <div class="section-heading compact-heading">
+            <div>
+              <span class="section-kicker">最近记录</span>
+              <h3>你的拍摄痕迹</h3>
+            </div>
+            <button class="text-button" data-go="log" type="button">查看全部 →</button>
+          </div>
+          <div class="recent-list" id="recent-list"></div>
+        </section>
+
+        <section class="view" data-view="routes" aria-labelledby="routes-title">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">ROUTES & MAPS</p>
+              <h2 id="routes-title">路线与地图</h2>
+              <p class="muted">蓝色起点是菁汇公寓，线路方向就是建议拍摄顺序。</p>
+            </div>
+            <a class="outline-button" href="https://www.google.com/maps/search/?api=1&query=31.2718283,120.7696644" target="_blank" rel="noreferrer">打开起点地图 ↗</a>
+          </div>
+          <div class="filter-row" id="route-filters" role="tablist" aria-label="路线分类">
+            <button class="filter-chip active" data-route-filter="全部" type="button">全部</button>
+            <button class="filter-chip" data-route-filter="园林线" type="button">四季园林</button>
+            <button class="filter-chip" data-route-filter="景区线" type="button">著名景区</button>
+          </div>
+          <div class="route-list" id="route-list"></div>
+        </section>
+
+        <section class="view" data-view="budget" aria-labelledby="budget-title">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">BUDGET</p>
+              <h2 id="budget-title">费用预算</h2>
+              <p class="muted">按已持有园林卡、单人、地铁优先估算。</p>
+            </div>
+            <span class="budget-badge">增量预算</span>
+          </div>
+          <div class="budget-summary" id="budget-summary"></div>
+          <div class="notice-card"><strong>口径</strong><span>园林卡覆盖景点门票按 0 元；远郊路线包含公交或景区接驳估算。出发前再核对当天票价和预约。</span></div>
+          <div class="search-box"><span aria-hidden="true">⌕</span><input id="budget-search" type="search" placeholder="搜索景点或类型" /></div>
+          <div class="budget-list" id="budget-list"></div>
+        </section>
+
+        <section class="view" data-view="log" aria-labelledby="log-title">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">FIELD LOG</p>
+              <h2 id="log-title">拍摄记录</h2>
+              <p class="muted">每一次出门，都留下可回看的现场。</p>
+            </div>
+            <span class="record-count" id="record-count">0 条</span>
+          </div>
+          <form class="record-form" id="record-form">
+            <div class="form-grid">
+              <label><span>日期</span><input id="record-date" name="date" type="date" required /></label>
+              <label><span>地点</span><select id="record-place" name="place" required></select></label>
+              <label><span>内容</span><select name="kind"><option>图文混合</option><option>照片</option><option>视频</option><option>补拍</option></select></label>
+              <label><span>天气</span><select name="weather"><option>晴</option><option>阴</option><option>雨后</option><option>小雨</option><option>雾</option><option>大风</option></select></label>
+            </div>
+            <label><span>这次准备拍什么</span><textarea name="focus" rows="3" placeholder="例如：先拍入口和水面，再补一条沿廊稳定移动镜头"></textarea></label>
+            <label><span>素材文件名（可选）</span><input id="record-files" name="files" type="file" accept="image/*,video/*" multiple /></label>
+            <div class="form-actions"><button class="primary-button" type="submit">保存这条记录</button><button class="ghost-button" id="clear-form" type="button">清空</button></div>
+          </form>
+          <div class="log-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><input id="log-search" type="search" placeholder="搜索记录" /></div><button class="outline-button" id="export-button" type="button">导出记录 ↓</button></div>
+          <div class="log-list" id="log-list"></div>
+        </section>
+
+        <section class="view" data-view="annual" aria-labelledby="annual-title">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">YEAR AT A GLANCE</p>
+              <h2 id="annual-title">年度拍摄表</h2>
+              <p class="muted">完成一个月，就点亮一个季节。</p>
+            </div>
+          </div>
+          <div class="annual-legend"><span><i class="dot spring"></i>春</span><span><i class="dot summer"></i>夏</span><span><i class="dot autumn"></i>秋</span><span><i class="dot winter"></i>冬</span></div>
+          <div class="month-list" id="month-list"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="主导航">
+        <button class="nav-item active" data-nav="home" type="button"><span>⌂</span><small>首页</small></button>
+        <button class="nav-item" data-nav="routes" type="button"><span>⌁</span><small>路线</small></button>
+        <button class="nav-item" data-nav="budget" type="button"><span>¥</span><small>预算</small></button>
+        <button class="nav-item" data-nav="log" type="button"><span>✎</span><small>记录</small></button>
+        <button class="nav-item" data-nav="annual" type="button"><span>▦</span><small>年度</small></button>
+      </nav>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>
