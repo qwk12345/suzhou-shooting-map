@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f766e" />
+    <meta name="theme-color" content="#246b5b" />
     <meta name="description" content="从菁汇公寓出发的苏州园林与名胜四季拍摄计划、费用和长期记录工具。" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
@@ -98,7 +98,7 @@
               <h2 id="routes-title">路线与地图</h2>
               <p class="muted">蓝色起点是菁汇公寓，线路方向就是建议拍摄顺序。</p>
             </div>
-            <a class="outline-button" href="https://www.google.com/maps/search/?api=1&query=31.2718283,120.7696644" target="_blank" rel="noreferrer">打开起点地图 ↗</a>
+            <button class="outline-button" id="start-navigation-button" type="button">选择导航方式 ↗</button>
           </div>
           <div class="filter-row" id="route-filters" role="tablist" aria-label="路线分类">
             <button class="filter-chip active" data-route-filter="全部" type="button">全部</button>
@@ -168,6 +168,36 @@
         <button class="nav-item" data-nav="annual" type="button"><span>▦</span><small>年度</small></button>
       </nav>
     </div>
+    <dialog class="navigation-dialog" id="navigation-dialog" aria-labelledby="navigation-title">
+      <div class="navigation-dialog-inner">
+        <div class="navigation-dialog-head">
+          <div>
+            <span class="section-kicker">PHONE NAVIGATION</span>
+            <h2 id="navigation-title">选择导航方式</h2>
+            <p id="navigation-subtitle" class="muted"></p>
+          </div>
+          <button class="dialog-close" id="navigation-close" type="button" aria-label="关闭导航选择">×</button>
+        </div>
+        <div class="navigation-options">
+          <button class="navigation-option option-chooser" id="choose-navigation-app" type="button">
+            <span class="navigation-option-icon">⌁</span>
+            <span><strong>手机自选应用</strong><small>打开手机分享面板，选择已安装的导航 App</small></span>
+            <span class="navigation-option-arrow">→</span>
+          </button>
+          <a class="navigation-option option-amap" id="amap-navigation-link" target="_blank" rel="noreferrer">
+            <span class="navigation-option-icon">A</span>
+            <span><strong>高德地图</strong><small>优先打开高德 App，未安装时打开网页</small></span>
+            <span class="navigation-option-arrow">↗</span>
+          </a>
+          <a class="navigation-option option-apple" id="apple-navigation-link" target="_blank" rel="noreferrer">
+            <span class="navigation-option-icon">⌖</span>
+            <span><strong>苹果地图 / 手机自带地图</strong><small>使用 iPhone 自带地图规划公交路线</small></span>
+            <span class="navigation-option-arrow">↗</span>
+          </a>
+        </div>
+        <button class="navigation-cancel" id="navigation-cancel" type="button">取消</button>
+      </div>
+    </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="app.js" defer></script>
   </body>

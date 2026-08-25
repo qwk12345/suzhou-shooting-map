@@ -54,6 +54,7 @@ const storageKey = "suzhou-four-seasons-shooting-v1";
 let state = loadState();
 let deferredInstallPrompt = null;
 let activeRouteFilter = "全部";
+let navigationTarget = { order: [homePoint.name] };
 
 function loadState() {
   try {
@@ -102,9 +103,59 @@ function routeTicket(route) {
   }, 0);
 }
 
-function mapsUrl(order) {
-  const waypoints = order.map((name) => encodeURIComponent(`${name} 苏州`)).join("|");
-  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent("菁汇公寓 苏州")}&destination=${encodeURIComponent(`${order.at(-1)} 苏州`)}&waypoints=${waypoints}`;
+function amapUrl(order) {
+  const destination = order.at(-1) || homePoint.name;
+  return `https://uri.amap.com/search?keyword=${encodeURIComponent(`${destination} 苏州`)}&city=${encodeURIComponent("苏州")}&callnative=1`;
+}
+
+function appleMapsUrl(order) {
+  const destination = order.at(-1) || homePoint.name;
+  return `https://maps.apple.com/?saddr=${encodeURIComponent(`${homePoint.name} 苏州`)}&daddr=${encodeURIComponent(`${destination} 苏州`)}&dirflg=r`;
+}
+
+function navigationDescription(order) {
+  const destination = order.at(-1) || homePoint.name;
+  const stops = order.slice(0, -1);
+  return stops.length ? `从${homePoint.name}出发，终点是${destination}，中途经过${stops.join("、")}。` : `当前位置：${destination}。`;
+}
+
+function openNavigationChooser(order) {
+  navigationTarget = { order };
+  document.querySelector("#navigation-title").textContent = order.length > 1 ? "选择导航方式" : "打开起点地图";
+  document.querySelector("#navigation-subtitle").textContent = navigationDescription(order);
+  document.querySelector("#amap-navigation-link").href = amapUrl(order);
+  document.querySelector("#apple-navigation-link").href = appleMapsUrl(order);
+  const dialog = document.querySelector("#navigation-dialog");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+}
+
+function closeNavigationChooser() {
+  const dialog = document.querySelector("#navigation-dialog");
+  if (typeof dialog.close === "function") dialog.close();
+  else dialog.removeAttribute("open");
+}
+
+async function chooseNavigationApp() {
+  const { order } = navigationTarget;
+  const destination = order.at(-1) || homePoint.name;
+  const text = `苏州拍摄导航：${navigationDescription(order)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `前往${destination}`, text, url: appleMapsUrl(order) });
+      closeNavigationChooser();
+      return;
+    }
+    if (/Android/i.test(navigator.userAgent)) {
+      window.location.href = `geo:0,0?q=${encodeURIComponent(`${destination} 苏州`)}`;
+      return;
+    }
+    await navigator.clipboard.writeText(`${text}\n${appleMapsUrl(order)}`);
+    closeNavigationChooser();
+    showToast("导航信息已复制");
+  } catch {
+    showToast("未打开导航应用");
+  }
 }
 
 function setView(viewName) {
@@ -139,7 +190,7 @@ function renderRoutes() {
       <div class="route-card-head"><div><span class="route-type">${route.type} · ${route.season}</span><h3>${route.title}</h3></div><span class="route-total">${money(routeTicket(route) + route.transport)}</span></div>
       <p class="route-description">${route.target}。${route.note}</p>
       <div class="route-stops"><span class="stop home-stop">H 菁汇公寓</span>${route.order.map((stop) => `<span class="stop">${stop}</span>`).join("")}</div>
-      <div class="route-card-foot"><span>门票 <strong>${money(routeTicket(route))}</strong> · 交通 <strong>${money(route.transport)}</strong> · ${route.days}</span><a class="text-button" href="${mapsUrl(route.order)}" target="_blank" rel="noreferrer">导航 ↗</a></div>
+      <div class="route-card-foot"><span>门票 <strong>${money(routeTicket(route))}</strong> · 交通 <strong>${money(route.transport)}</strong> · ${route.days}</span><button class="text-button" data-navigate-route="${route.id}" type="button">导航 ↗</button></div>
     </article>`).join("");
 }
 
@@ -217,8 +268,13 @@ function exportRecords() {
 document.addEventListener("click", (event) => {
   const nav = event.target.closest("[data-nav]");
   const go = event.target.closest("[data-go]");
+  const routeNavigation = event.target.closest("[data-navigate-route]");
   if (nav) setView(nav.dataset.nav);
   if (go) setView(go.dataset.go);
+  if (routeNavigation) {
+    const route = routeData.find((item) => item.id === routeNavigation.dataset.navigateRoute);
+    if (route) openNavigationChooser(route.order);
+  }
   const filter = event.target.closest("[data-route-filter]");
   if (filter) {
     activeRouteFilter = filter.dataset.routeFilter;
@@ -260,6 +316,13 @@ document.querySelector("#clear-form").addEventListener("click", resetForm);
 document.querySelector("#export-button").addEventListener("click", exportRecords);
 document.querySelector("#budget-search").addEventListener("input", drawBudgetList);
 document.querySelector("#log-search").addEventListener("input", renderLog);
+document.querySelector("#start-navigation-button").addEventListener("click", () => openNavigationChooser([homePoint.name]));
+document.querySelector("#choose-navigation-app").addEventListener("click", chooseNavigationApp);
+document.querySelector("#navigation-close").addEventListener("click", closeNavigationChooser);
+document.querySelector("#navigation-cancel").addEventListener("click", closeNavigationChooser);
+document.querySelector("#navigation-dialog").addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) closeNavigationChooser();
+});
 document.querySelector("#share-button").addEventListener("click", async () => {
   try {
     if (navigator.share) await navigator.share({ title: "苏州四季拍摄地图", text: "从菁汇公寓出发的苏州园林与名胜拍摄计划", url: window.location.href });
