@@ -143,14 +143,6 @@ function appleMapsUrl(fromName, toName) {
   return `https://maps.apple.com/?saddr=${encodeURIComponent(`${fromName} 苏州`)}&daddr=${encodeURIComponent(`${toName} 苏州`)}&dirflg=r`;
 }
 
-function completeRouteUrl(order) {
-  const origin = order[0] || homePoint.name;
-  const stops = order.slice(1, -1).map((name) => encodeURIComponent(`${name} 苏州`)).join("|");
-  const destination = order.at(-1) || origin;
-  const waypointPart = stops ? `&waypoints=${stops}` : "";
-  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(`${origin} 苏州`)}&destination=${encodeURIComponent(`${destination} 苏州`)}${waypointPart}&travelmode=transit`;
-}
-
 function navigationDescription(order) {
   const origin = order[0] || homePoint.name;
   const destination = order.at(-1) || origin;
@@ -162,9 +154,6 @@ function openNavigationChooser(order) {
   navigationTarget = { order };
   document.querySelector("#navigation-title").textContent = order.length > 1 ? "选择导航方式" : "打开起点地图";
   document.querySelector("#navigation-subtitle").textContent = navigationDescription(order);
-  const completeLink = document.querySelector("#complete-route-link");
-  completeLink.href = completeRouteUrl(order);
-  completeLink.hidden = order.length < 2;
   document.querySelector("#navigation-segments").innerHTML = order.length > 1 ? `
     <div class="navigation-segments-head"><strong>按线路顺序分段导航</strong><small>高德和苹果地图的手机链接不支持 3 个以上途经点，分段打开最稳定。</small></div>
     <div class="navigation-segment-list">${order.slice(0, -1).map((from, index) => {
@@ -188,7 +177,7 @@ async function chooseNavigationApp() {
   const text = `苏州拍摄导航：${navigationDescription(order)}`;
   try {
     if (navigator.share) {
-      await navigator.share({ title: `前往${destination}`, text, url: completeRouteUrl(order) });
+      await navigator.share({ title: `前往${destination}`, text });
       closeNavigationChooser();
       return;
     }
@@ -196,7 +185,7 @@ async function chooseNavigationApp() {
       window.location.href = `geo:0,0?q=${encodeURIComponent(`${destination} 苏州`)}`;
       return;
     }
-    await navigator.clipboard.writeText(`${text}\n${completeRouteUrl(order)}`);
+    await navigator.clipboard.writeText(text);
     closeNavigationChooser();
     showToast("导航信息已复制");
   } catch {
