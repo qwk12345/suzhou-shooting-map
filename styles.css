@@ -209,6 +209,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--jade); box-shado
 .navigation-option strong { font-size: 13px; }
 .navigation-option small { margin-top: 3px; color: var(--ink-soft); font-size: 10px; line-height: 1.45; }
 .navigation-option-arrow { margin-left: auto; color: var(--jade); font-size: 19px; }
+.navigation-segments { margin-top: 15px; }
+.navigation-segments-head { display: grid; gap: 4px; padding: 0 4px 8px; }
+.navigation-segments-head strong { font-size: 12px; }
+.navigation-segments-head small { color: var(--ink-soft); font-size: 10px; line-height: 1.5; }
+.navigation-segment-list { display: grid; gap: 7px; max-height: 220px; overflow-y: auto; padding-right: 2px; }
+.navigation-segment { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 11px; background: var(--white); }
+.segment-number { display: grid; place-items: center; width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%; background: var(--jade-soft); color: var(--jade-dark); font-size: 11px; font-weight: 800; }
+.segment-route { display: flex; align-items: baseline; gap: 5px; min-width: 0; flex: 1; overflow: hidden; }
+.segment-route strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.segment-route small { color: var(--ink-soft); font-size: 9px; }
+.segment-actions { display: flex; gap: 4px; flex: 0 0 auto; }
+.segment-link { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 5px 7px; border-radius: 8px; font-size: 10px; font-weight: 750; text-decoration: none; }
+.amap-link { background: #e4f2e3; color: #328345; }
+.apple-link { background: #ececf0; color: #34343a; }
 .navigation-cancel { display: block; width: 100%; min-height: 42px; margin-top: 12px; border: 0; border-radius: 11px; background: transparent; color: var(--ink-soft); font-size: 12px; font-weight: 750; }
 .navigation-cancel:hover, .navigation-cancel:focus-visible { background: var(--paper-deep); outline: none; }
 

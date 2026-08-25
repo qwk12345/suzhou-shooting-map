@@ -1,5 +1,28 @@
 const homePoint = { name: "菁汇公寓", lat: 31.2718283, lon: 120.7696644 };
 
+const placeCoordinates = {
+  "拙政园": { lat: 31.3263526, lon: 120.6247123 },
+  "留园": { lat: 31.3176166, lon: 120.5879588 },
+  "网师园": { lat: 31.3004239, lon: 120.6297972 },
+  "耦园": { lat: 31.3183646, lon: 120.6341018 },
+  "沧浪亭": { lat: 31.296731, lon: 120.6214474 },
+  "狮子林": { lat: 31.3231278, lon: 120.6248775 },
+  "艺圃": { lat: 31.315425, lon: 120.6046815 },
+  "环秀山庄": { lat: 31.3131202, lon: 120.6090149 },
+  "虎丘山风景区": { lat: 31.3375308, lon: 120.5763902 },
+  "寒山寺": { lat: 31.3125175, lon: 120.5642846 },
+  "山塘街": { lat: 31.321804, lon: 120.5977835 },
+  "平江路历史街区": { lat: 31.3175703, lon: 120.6292335 },
+  "苏州博物馆": { lat: 31.3252495, lon: 120.6235687 },
+  "金鸡湖景区": { lat: 31.3114336, lon: 120.68029 },
+  "东方之门": { lat: 31.3191811, lon: 120.6747222 },
+  "太湖国家湿地公园": { lat: 31.3224082, lon: 120.3568034 },
+  "木渎古镇": { lat: 31.2529067, lon: 120.5083258 },
+  "天平山景区": { lat: 31.2852104, lon: 120.4982343 },
+  "同里古镇": { lat: 31.169, lon: 120.724 },
+  "周庄古镇": { lat: 31.117, lon: 120.846 },
+};
+
 const places = [
   ["拙政园", "古典园林", "园林卡覆盖", 80, 6, "春 / 夏 / 秋"],
   ["留园", "古典园林", "园林卡覆盖", 55, 6, "夏 / 秋"],
@@ -103,28 +126,51 @@ function routeTicket(route) {
   }, 0);
 }
 
-function amapUrl(order) {
-  const destination = order.at(-1) || homePoint.name;
-  return `https://uri.amap.com/search?keyword=${encodeURIComponent(`${destination} 苏州`)}&city=${encodeURIComponent("苏州")}&callnative=1`;
+function pointData(name) {
+  return name === homePoint.name ? homePoint : { name, ...(placeCoordinates[name] || {}) };
 }
 
-function appleMapsUrl(order) {
-  const destination = order.at(-1) || homePoint.name;
-  return `https://maps.apple.com/?saddr=${encodeURIComponent(`${homePoint.name} 苏州`)}&daddr=${encodeURIComponent(`${destination} 苏州`)}&dirflg=r`;
+function amapNavigationUrl(fromName, toName) {
+  const from = pointData(fromName);
+  const to = pointData(toName);
+  if (!from.lat || !to.lat) return `https://uri.amap.com/search?keyword=${encodeURIComponent(`${toName} 苏州`)}&city=${encodeURIComponent("苏州")}&callnative=1`;
+  const fromValue = `${from.lon},${from.lat},${encodeURIComponent(from.name)}`;
+  const toValue = `${to.lon},${to.lat},${encodeURIComponent(to.name)}`;
+  return `https://uri.amap.com/navigation?from=${fromValue}&to=${toValue}&mode=bus&policy=1&src=suzhou-shooting-map&coordinate=gaode&callnative=1`;
+}
+
+function appleMapsUrl(fromName, toName) {
+  return `https://maps.apple.com/?saddr=${encodeURIComponent(`${fromName} 苏州`)}&daddr=${encodeURIComponent(`${toName} 苏州`)}&dirflg=r`;
+}
+
+function completeRouteUrl(order) {
+  const origin = order[0] || homePoint.name;
+  const stops = order.slice(1, -1).map((name) => encodeURIComponent(`${name} 苏州`)).join("|");
+  const destination = order.at(-1) || origin;
+  const waypointPart = stops ? `&waypoints=${stops}` : "";
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(`${origin} 苏州`)}&destination=${encodeURIComponent(`${destination} 苏州`)}${waypointPart}&travelmode=transit`;
 }
 
 function navigationDescription(order) {
-  const destination = order.at(-1) || homePoint.name;
-  const stops = order.slice(0, -1);
-  return stops.length ? `从${homePoint.name}出发，终点是${destination}，中途经过${stops.join("、")}。` : `当前位置：${destination}。`;
+  const origin = order[0] || homePoint.name;
+  const destination = order.at(-1) || origin;
+  const stops = order.slice(1, -1);
+  return stops.length ? `从${origin}出发，终点是${destination}，中途经过${stops.join("、")}。` : `从${origin}前往${destination}。`;
 }
 
 function openNavigationChooser(order) {
   navigationTarget = { order };
   document.querySelector("#navigation-title").textContent = order.length > 1 ? "选择导航方式" : "打开起点地图";
   document.querySelector("#navigation-subtitle").textContent = navigationDescription(order);
-  document.querySelector("#amap-navigation-link").href = amapUrl(order);
-  document.querySelector("#apple-navigation-link").href = appleMapsUrl(order);
+  const completeLink = document.querySelector("#complete-route-link");
+  completeLink.href = completeRouteUrl(order);
+  completeLink.hidden = order.length < 2;
+  document.querySelector("#navigation-segments").innerHTML = order.length > 1 ? `
+    <div class="navigation-segments-head"><strong>按线路顺序分段导航</strong><small>高德和苹果地图的手机链接不支持 3 个以上途经点，分段打开最稳定。</small></div>
+    <div class="navigation-segment-list">${order.slice(0, -1).map((from, index) => {
+      const to = order[index + 1];
+      return `<div class="navigation-segment"><span class="segment-number">${index + 1}</span><span class="segment-route"><strong>${from}</strong><small>到</small><strong>${to}</strong></span><span class="segment-actions"><a class="segment-link amap-link" href="${amapNavigationUrl(from, to)}" target="_blank" rel="noreferrer">高德</a><a class="segment-link apple-link" href="${appleMapsUrl(from, to)}" target="_blank" rel="noreferrer">苹果地图</a></span></div>`;
+    }).join("")}</div>` : "";
   const dialog = document.querySelector("#navigation-dialog");
   if (typeof dialog.showModal === "function") dialog.showModal();
   else dialog.setAttribute("open", "");
@@ -142,7 +188,7 @@ async function chooseNavigationApp() {
   const text = `苏州拍摄导航：${navigationDescription(order)}`;
   try {
     if (navigator.share) {
-      await navigator.share({ title: `前往${destination}`, text, url: appleMapsUrl(order) });
+      await navigator.share({ title: `前往${destination}`, text, url: completeRouteUrl(order) });
       closeNavigationChooser();
       return;
     }
@@ -150,7 +196,7 @@ async function chooseNavigationApp() {
       window.location.href = `geo:0,0?q=${encodeURIComponent(`${destination} 苏州`)}`;
       return;
     }
-    await navigator.clipboard.writeText(`${text}\n${appleMapsUrl(order)}`);
+    await navigator.clipboard.writeText(`${text}\n${completeRouteUrl(order)}`);
     closeNavigationChooser();
     showToast("导航信息已复制");
   } catch {
@@ -273,7 +319,7 @@ document.addEventListener("click", (event) => {
   if (go) setView(go.dataset.go);
   if (routeNavigation) {
     const route = routeData.find((item) => item.id === routeNavigation.dataset.navigateRoute);
-    if (route) openNavigationChooser(route.order);
+    if (route) openNavigationChooser([homePoint.name, ...route.order]);
   }
   const filter = event.target.closest("[data-route-filter]");
   if (filter) {

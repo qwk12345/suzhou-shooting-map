@@ -181,20 +181,16 @@
         <div class="navigation-options">
           <button class="navigation-option option-chooser" id="choose-navigation-app" type="button">
             <span class="navigation-option-icon">⌁</span>
-            <span><strong>手机自选应用</strong><small>打开手机分享面板，选择已安装的导航 App</small></span>
+            <span><strong>手机自选应用</strong><small>打开手机分享面板，选择已安装的地图 App</small></span>
             <span class="navigation-option-arrow">→</span>
           </button>
-          <a class="navigation-option option-amap" id="amap-navigation-link" target="_blank" rel="noreferrer">
-            <span class="navigation-option-icon">A</span>
-            <span><strong>高德地图</strong><small>优先打开高德 App，未安装时打开网页</small></span>
-            <span class="navigation-option-arrow">↗</span>
-          </a>
-          <a class="navigation-option option-apple" id="apple-navigation-link" target="_blank" rel="noreferrer">
-            <span class="navigation-option-icon">⌖</span>
-            <span><strong>苹果地图 / 手机自带地图</strong><small>使用 iPhone 自带地图规划公交路线</small></span>
+          <a class="navigation-option option-complete" id="complete-route-link" target="_blank" rel="noreferrer">
+            <span class="navigation-option-icon">◎</span>
+            <span><strong>完整多点路线</strong><small>支持起点、途经点和终点，一次查看整条线路</small></span>
             <span class="navigation-option-arrow">↗</span>
           </a>
         </div>
+        <div class="navigation-segments" id="navigation-segments"></div>
         <button class="navigation-cancel" id="navigation-cancel" type="button">取消</button>
       </div>
     </dialog>
