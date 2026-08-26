@@ -212,7 +212,8 @@ function renderHome() {
     <span class="route-type">${route.type} · ${route.days}</span>
     <h3>${route.title}</h3>
     <p>${route.target}。${route.note}</p>
-    <div class="feature-meta"><span class="meta-pill">门票 ${money(routeTicket(route))}</span><span class="meta-pill">交通约 ${money(route.transport)}</span><span class="meta-pill">${route.order.length} 个点</span></div>`;
+    <div class="feature-meta"><span class="meta-pill">门票 ${money(routeTicket(route))}</span><span class="meta-pill">交通约 ${money(route.transport)}</span><span class="meta-pill">${route.order.length} 个点</span></div>
+    <button class="feature-action" data-go="routes" type="button">查看这条路线 <span>→</span></button>`;
   const recent = [...state.records].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
   document.querySelector("#recent-list").innerHTML = recent.length ? recent.map((record) => `
     <div class="recent-item"><span class="recent-icon">${record.kind === "视频" ? "▶" : "▧"}</span><div><strong>${record.place}</strong><small>${formatDate(record.date)} · ${record.kind} · ${record.weather}</small></div></div>`).join("") : `<div class="empty-state">还没有记录，下一次拍完就从这里开始。</div>`;

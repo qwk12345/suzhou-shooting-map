@@ -307,3 +307,35 @@ input, select, textarea { background: #101b1b; }
 .season-autumn { background: #403421; color: #e0b967; }
 .season-winter { background: #293235; color: #b8c4c7; }
 .month-card.done { border-color: #356d5e; background: #142b27; }
+
+/* Home view: one clear starting point */
+.view[data-view="home"] .main-content { padding-top: 18px; }
+.home-intro { padding: 4px 2px 0; }
+.view[data-view="home"] { margin-top: -6px; }
+.home-intro h2 { margin: 7px 0 6px; font-size: clamp(32px, 8vw, 42px); }
+.home-intro .muted { max-width: 300px; margin-bottom: 0; }
+.view[data-view="home"] .hero-panel { margin: 17px 0 21px; padding: 16px 18px; }
+.view[data-view="home"] .hero-panel strong { font-size: 21px; }
+.view[data-view="home"] .progress-track { margin: 14px 0 10px; }
+.view[data-view="home"] .hero-panel-bottom { font-size: 10px; }
+.view[data-view="home"] .section-heading { margin: 15px 0 9px; }
+.view[data-view="home"] .compact-heading { margin-top: 21px; }
+.view[data-view="home"] .quick-card { min-height: 56px; padding: 10px 14px; }
+.view[data-view="home"] .quick-icon { width: 32px; height: 32px; font-size: 18px; }
+.view[data-view="home"] .feature-route { min-height: 0; padding: 16px 18px; }
+.view[data-view="home"] .feature-route h3 { font-size: 21px; }
+.view[data-view="home"] .feature-route p { display: -webkit-box; overflow: hidden; margin: 7px 0 10px; font-size: 12px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.feature-action { display: inline-flex; align-items: center; gap: 9px; min-height: 34px; margin-top: 15px; padding: 7px 0; border: 0; border-bottom: 1px solid rgba(255,255,255,0.42); background: transparent; color: #f1fffa; font-size: 12px; font-weight: 750; }
+.feature-action span { font-size: 17px; transition: transform 160ms ease; }
+.feature-action:hover span, .feature-action:focus-visible span { transform: translateX(3px); }
+.home-recent-heading { margin-top: 20px !important; }
+.view[data-view="home"] .empty-state { padding: 17px 14px; font-size: 12px; }
+
+@media (min-width: 360px) and (max-width: 679px) {
+  .view[data-view="home"] .quick-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .view[data-view="home"] .quick-card { min-height: 70px; padding: 10px; gap: 7px; }
+  .view[data-view="home"] .quick-icon { width: 29px; height: 29px; }
+  .view[data-view="home"] .quick-card strong { font-size: 12px; }
+  .view[data-view="home"] .quick-card small { font-size: 10px; }
+  .view[data-view="home"] .arrow { font-size: 17px; }
+}
